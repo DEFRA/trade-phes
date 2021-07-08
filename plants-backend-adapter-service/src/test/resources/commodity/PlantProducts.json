@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "$id": "v5.0",
+  "definitions": {
+    "isoAlpha2-or-iso3166-2": {
+      "type": "string",
+      "oneOf": [
+        {
+          "pattern": "^[A-Z]{2}$"
+        },
+        {
+          "pattern": "^[A-Z]{2}-[A-Z0-9]{2,3}$"
+        }
+      ]
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "measurementUnit": {
+      "enum": [
+        "Grams",
+        "Kilograms",
+        "Litres",
+        "Tonnes",
+        "Units"
+      ]
+    },
+    "transportMode": {
+      "type": "string",
+      "enum": [
+        "Maritime",
+        "Rail",
+        "Road",
+        "Air",
+        "Mail"
+      ]
+    },
+    "consignee": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "importPermitNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "address"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "applicationId": {
+      "type": "integer"
+    },
+    "furtherInformation": {
+      "type": "string"
+    },
+    "submissionDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "commodityGroup": {
+      "type": "string",
+      "enum": [
+        "PlantProducts"
+      ]
+    },
+    "certificateGenerationURL": {
+      "type": "string"
+    },
+    "documentsViewURL": {
+      "type": "string"
+    },
+    "editApplicationURL": {
+      "type": "string"
+    },
+    "applicantId": {
+      "$ref": "#/definitions/uuid"
+    },
+    "exporterOrganisationId": {
+      "$ref": "#/definitions/uuid"
+    },
+    "userReference": {
+      "type": "string"
+    },
+    "applicationStatus": {
+      "type": "string",
+      "enum": [
+        "Submitted",
+        "Updated"
+      ]
+    },
+    "destinationCountry": {
+      "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+    },
+    "certificateRequiredByDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "consignments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "consignmentId": {
+              "$ref": "#/definitions/uuid"
+            },
+            "commodities": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/definitions/uuid"
+                    },
+                    "eppoCode": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "genus": {
+                      "type": "string"
+                    },
+                    "species": {
+                      "type": "string"
+                    },
+                    "countryOfOrigin": {
+                      "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+                    },
+                    "noOfPackages": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "packageType": {
+                      "type": "string"
+                    },
+                    "packagingMaterial": {
+                      "type": "string"
+                    },
+                    "additionalCountriesOfOrigin": {
+                      "type": "string"
+                    },
+                    "sampleReference": {
+                      "type": "integer"
+                    },
+                    "distinguishingMarks": {
+                      "type": "string"
+                    },
+                    "amountOrQuantity": {
+                      "type": "number"
+                    },
+                    "measurementUnit": {
+                      "$ref": "#/definitions/measurementUnit"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "countryOfOrigin",
+                    "sampleReference",
+                    "amountOrQuantity",
+                    "measurementUnit",
+                    "noOfPackages",
+                    "packageType"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "consignee": {
+              "$ref": "#/definitions/consignee"
+            },
+            "valueAmountInPounds": {
+              "type": "number"
+            },
+            "pointOfEntry": {
+              "type": "string"
+            },
+            "transportMode": {
+              "$ref": "#/definitions/transportMode"
+            }
+          },
+          "required": [
+            "consignmentId",
+            "commodities",
+            "consignee",
+            "valueAmountInPounds",
+            "pointOfEntry",
+            "transportMode"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "applicationId",
+    "submissionDateTime",
+    "commodityGroup",
+    "certificateGenerationURL",
+    "applicantId",
+    "userReference",
+    "applicationStatus",
+    "destinationCountry",
+    "certificateRequiredByDate",
+    "consignments"
+  ],
+  "additionalProperties": false
+}

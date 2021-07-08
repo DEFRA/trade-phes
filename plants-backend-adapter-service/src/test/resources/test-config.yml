@@ -1,0 +1,168 @@
+applicationName: "plants-backend-adapter-service"
+versionNumber: "${CASE_MANAGEMENT_SERVICE_VERSION}"
+
+server:
+  applicationConnectors:
+    - type: http
+      port: !!int ${CASE_MANAGEMENT_SERVICE_PORT}
+      maxRequestHeaderSize: 128KiB
+  adminConnectors:
+    - type: http
+      port: 5161
+  requestLog:
+    # set to empty list to disable HTTP request logging
+    appenders: []
+
+logging:
+  level: "${BACKEND_ADAPTER_SERVICE_LOGGING_LEVEL}"
+  appenders:
+    - type: application-insights
+    - type: console
+      timeZone: UTC
+      logFormat: "%-5level [%date{ISO8601,UTC}] %mdc{defra-exports-correlation-id} %mdc{defra-exports-correlation-count} %logger{50}: %message%n%rootException"
+  loggers:
+    com.microsoft.azure.servicebus: ERROR
+
+basicAuthenticationCredentials:
+  password: "${CASE_MANAGEMENT_SERVICE_BASIC_AUTH_PASSWORD}"
+
+eventHubConfiguration:
+  eventHubNamespace: "${EVENT_HUB_NAMESPACE}"
+  eventHubName: "${EVENT_HUB_NAME}"
+  eventHubSharedAccessKeyName: "${EVENT_HUB_KEY_NAME}"
+  eventHubSharedAccessKey: "${EVENT_HUB_KEY_VALUE}"
+  numberOfThreads: "${EVENT_HUB_CLIENT_THREAD_COUNT}"
+  environmentAbbreviation: "${ENVIRONMENT_ABBREVIATION}"
+
+redis:
+  host: "${REDIS_SERVER_NAME}"
+  port: "${REDIS_SERVER_PORT}"
+  password: "${REDIS_SERVER_PASSWORD}"
+  ssl: "${REDIS_USE_TLS}"
+  connectionTimeout: "${REDIS_CONNECTION_TIMEOUT}"
+  soTimeout: "${REDIS_SO_TIMEOUT}"
+  pool:
+    minIdle: "${REDIS_POOL_MIN_IDLE}"
+    maxIdle: "${REDIS_POOL_MAX_IDLE}"
+    maxTotal: "${REDIS_POOL_MAX_TOTAL}"
+    maxWaitMillis: "${REDIS_POOL_MAX_WAIT}"
+    timeBetweenEvictionRunsMillis: "${REDIS_POOL_EVICTION_TIME}"
+    minEvictableIdleTimeMillis: "${REDIS_POOL_EVICTION_IDLE_TIME}"
+  envPrefix: "${REDIS_CACHE_ENV_PREFIX}"
+
+eppoDataCache:
+  expiry: "${EPPO_DATA_CACHE_EXPIRY}"
+  clientErrorExpiry: "${EPPO_DATA_CACHE_CLIENT_ERROR_EXPIRY}"
+
+eppoListCache:
+  expiry: "${EPPO_LIST_CACHE_EXPIRY}"
+  clientErrorExpiry: "${EPPO_LIST_CACHE_CLIENT_ERROR_EXPIRY}"
+
+swagger:
+  resourcePackage: uk.gov.defra.plants.backend.resource
+  schemes:
+    - "${CASE_MANAGEMENT_SERVICE_SCHEME}"
+
+urlTemplates:
+  editApplicationForm: "${FRONTEND_SCHEME}://${FRONTEND_HOST}:${FRONTEND_PORT}/protected/form/%s/application/%s/review"
+  ehc: "${FRONTEND_SCHEME}://${FRONTEND_HOST}:${FRONTEND_PORT}/protected/application/%s/ehc"
+  uploadedDocViewUrl: "${FRONTEND_SCHEME}://${FRONTEND_HOST}:${FRONTEND_PORT}/protected/form/%s/application/%s/supplementary-documents"
+
+tradeApiClient:
+  connectionTimeout: 5s
+  timeout: 90s
+  gzipEnabledForRequests: false
+  chunkedEncodingEnabled: false
+
+tradeApi:
+  clientId: "${TRADE_API_OAUTH_CLIENT_ID}"
+  clientSecret: "${TRADE_API_OAUTH_CLIENT_SECRET}"
+  grantType: "client_credentials"
+  scope: "${TRADE_API_SCOPE}"
+  accessTokenUrl: "${TRADE_API_OAUTH_SERVER_URL}"
+  resourceServerUrl: "${TRADE_API_RESOURCE_SERVER_URL}"
+  refreshTokenThresholdInSecondsBeforeExpires: 30
+  tradeAPISubscriptionKeyName: "Ocp-Apim-Subscription-Key"
+  tradeAPISubscriptionKey: "${TRADE_API_SUBSCRIPTION_KEY}"
+  serviceId: "${PLANTS_SERVICE_ID}"
+
+dynamicsClient:
+  connectionTimeout: 5s
+  timeout: 90s
+  gzipEnabledForRequests: false
+  chunkedEncodingEnabled: false
+
+dynamics:
+  resource: "${DYNAMICS_OAUTH_RESOURCE}"
+  clientId: "${DYNAMICS_OAUTH_CLIENT_ID}"
+  clientSecret: "${DYNAMICS_OAUTH_CLIENT_SECRET}"
+  grantType: "${DYNAMICS_GRANT_TYPE}"
+  authenticationServerUrl: "${DYNAMICS_OAUTH_SERVER_URL}"
+  resourceServerUrl: "${DYNAMICS_OAUTH_RESOURCE_SERVER_URL}"
+  refreshTokenThresholdInSecondsBeforeExpires: 30
+
+logicAppClient:
+  connectionTimeout: 1s
+  timeout: 5s
+  gzipEnabledForRequests: false
+  chunkedEncodingEnabled: false
+
+ehcTemplateUri: "${LOGIC_APP_EHC_TEMPLATE_URL}"
+
+formConfigurationServiceClient:
+  connectionTimeout: ${FORM_CONFIGURATION_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${FORM_CONFIGURATION_SERVICE_TIMEOUT}
+
+formConfigurationService:
+  baseUri: "${FORM_CONFIGURATION_SERVICE_SCHEME}://${FORM_CONFIGURATION_SERVICE_HOST}:${FORM_CONFIGURATION_SERVICE_PORT}"
+  retryWait: ${FORM_CONFIGURATION_SERVICE_RETRY_WAIT}
+
+fileStorageServiceClient:
+  connectionTimeout: ${FILE_STORAGE_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${FILE_STORAGE_SERVICE_TIMEOUT}
+
+fileStorageService:
+  baseUri: "${FILE_STORAGE_SERVICE_SCHEME}://${FILE_STORAGE_SERVICE_HOST}:${FILE_STORAGE_SERVICE_PORT}"
+  retryWait: ${FILE_STORAGE_SERVICE_RETRY_WAIT}
+
+applicationFormServiceClient:
+  connectionTimeout: ${APPLICATION_FORM_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${APPLICATION_FORM_SERVICE_TIMEOUT}
+
+applicationFormService:
+  baseUri: "${APPLICATION_FORM_SERVICE_SCHEME}://${APPLICATION_FORM_SERVICE_HOST}:${APPLICATION_FORM_SERVICE_PORT}"
+  retryWait: ${APPLICATION_FORM_SERVICE_RETRY_WAIT}
+
+caseManagementServiceUri: "${CASE_MANAGEMENT_SERVICE_SCHEME}://${CASE_MANAGEMENT_SERVICE_HOST}"
+
+jwtKey: ${JWT_DER}
+internalSymmetricalKey: "${INTERNAL_SYMMETRICAL_KEY}"
+
+createApplicationQueue:
+  name: "${CREATE_APPLICATION_QUEUE_NAME}"
+  connectionString: "${CASE_MANAGEMENT_SERVICE_BUS_CONNECTION_STRING_CREATE}"
+  receiveMode: "PEEKLOCK"
+  retry:
+    minimumBackoff: "${CREATE_APPLICATION_QUEUE_RETRY_MIN_BACKOFF}"
+    maximumBackoff: "${CREATE_APPLICATION_QUEUE_RETRY_MAX_BACKOFF}"
+    maximumRetryCount: "${CREATE_APPLICATION_QUEUE_RETRY_MAX_COUNT}"
+
+updateApplicationQueue:
+  name: "${UPDATE_APPLICATION_QUEUE_NAME}"
+  connectionString: "${CASE_MANAGEMENT_SERVICE_BUS_CONNECTION_STRING_UPDATE}"
+  receiveMode: "PEEKLOCK"
+  retry:
+    minimumBackoff: "${UPDATE_APPLICATION_QUEUE_RETRY_MIN_BACKOFF}"
+    maximumBackoff: "${UPDATE_APPLICATION_QUEUE_RETRY_MAX_BACKOFF}"
+    maximumRetryCount: "${UPDATE_APPLICATION_QUEUE_RETRY_MAX_COUNT}"
+
+cancelApplicationQueue:
+  name: "${CANCEL_APPLICATION_QUEUE_NAME}"
+  connectionString: "${CASE_MANAGEMENT_SERVICE_BUS_CONNECTION_STRING_CANCEL}"
+  receiveMode: "PEEKLOCK"
+  retry:
+    minimumBackoff: "${CANCEL_APPLICATION_QUEUE_RETRY_MIN_BACKOFF}"
+    maximumBackoff: "${CANCEL_APPLICATION_QUEUE_RETRY_MAX_BACKOFF}"
+    maximumRetryCount: "${CANCEL_APPLICATION_QUEUE_RETRY_MAX_COUNT}"
+
+doaEnabled: "${DOA_ENABLED}"
