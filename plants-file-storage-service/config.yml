@@ -1,0 +1,62 @@
+applicationName: "plants-file-storage-service"
+versionNumber: "${FILE_STORAGE_SERVICE_VERSION}"
+
+server:
+  applicationConnectors:
+  - type: http
+    port: !!int ${FILE_STORAGE_SERVICE_PORT}
+    maxRequestHeaderSize: 128KiB
+  adminConnectors:
+  - type: http
+    port: 5261
+  requestLog:
+    # set to empty list to disable HTTP request logging
+    appenders: []
+
+logging:
+  level: "${FILE_STORAGE_SERVICE_LOGGING_LEVEL}"
+  appenders:
+  - type: application-insights
+  - type: console
+    timeZone: UTC
+    logFormat: "%-5level [%date{ISO8601,UTC}] %mdc{defra-exports-correlation-id} %mdc{defra-exports-correlation-count} %logger{50}: %message%n%rootException"
+
+basicAuthenticationCredentials:
+  password: "${FILE_STORAGE_SERVICE_BASIC_AUTH_PASSWORD}"
+
+eventHubConfiguration:
+  eventHubNamespace: "${EVENT_HUB_NAMESPACE}"
+  eventHubName: "${EVENT_HUB_NAME}"
+  eventHubSharedAccessKeyName: "${EVENT_HUB_KEY_NAME}"
+  eventHubSharedAccessKey: "${EVENT_HUB_KEY_VALUE}"
+  numberOfThreads: "${EVENT_HUB_CLIENT_THREAD_COUNT}"
+  environmentAbbreviation: "${ENVIRONMENT_ABBREVIATION}"
+
+swagger:
+  resourcePackage: uk.gov.defra.plants.filestorage.resource
+  schemes:
+  - "${FILE_STORAGE_SERVICE_SCHEME}"
+
+azureBlobStorageConnectionString: "${FILE_STORAGE_SERVICE_AZURE_CONNECTION_STRING}"
+azureBlobStorageTimeoutMs: "${FILE_STORAGE_SERVICE_AZURE_CONNECTION_TIMEOUT}"
+
+certificateServiceClient:
+  connectionTimeout: ${CERTIFICATE_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${CERTIFICATE_SERVICE_TIMEOUT}
+
+certificateService:
+  baseUri: "${CERTIFICATE_SERVICE_SCHEME}://${CERTIFICATE_SERVICE_HOST}:${CERTIFICATE_SERVICE_PORT}"
+  retryWait: ${CERTIFICATE_SERVICE_RETRY_WAIT}
+
+# Symantec Protection Engine for Cloud Services
+host: ${AV_HOST}
+port: !!int ${AV_PORT}
+maximumConnectionAttempts: !!int ${AV_MAXIMUM_CONNECTION_ATTEMPTS}
+retryDelay: !!int ${AV_RETRY_DELAY} # msec
+socketTimeout: !!int ${AV_SOCKET_TIMEOUT} # msec
+
+jwtKey: ${JWT_DER}
+internalSymmetricalKey: "${INTERNAL_SYMMETRICAL_KEY}"
+
+adminTemplateContainerName: "${ADMIN_TEMPLATE_CONTAINER_NAME}"
+applicationFormContainerName: "${APPLICATION_FORM_CONTAINER_NAME}"
