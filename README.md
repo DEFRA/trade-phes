@@ -1,7 +1,7 @@
 # Defra: Trade: PHES
-## Plant Health Export System
+## Plant Health Export Service
 
-Mono-repo for Defra's Plant Health Export System.
+Mono-repo for Defra's Plant Health Export Service.
 
 ## Package structure
 
