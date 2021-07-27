@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "$id": "v5.0",
+  "definitions": {
+    "isoAlpha2-or-iso3166-2": {
+      "type": "string",
+      "oneOf": [
+        {
+          "pattern": "^[A-Z]{2}$"
+        },
+        {
+          "pattern": "^[A-Z]{2}-[A-Z0-9]{2,3}$"
+        }
+      ]
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "measurementUnit": {
+      "enum": [
+        "Grams",
+        "Kilograms",
+        "Litres",
+        "Tonnes",
+        "Units"
+      ]
+    },
+    "contactDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "phone"
+      ],
+      "additionalProperties": false
+    },
+    "transportMode": {
+      "type": "string",
+      "enum": [
+        "Maritime",
+        "Rail",
+        "Road",
+        "Air",
+        "Mail"
+      ]
+    },
+    "consignee": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "importPermitNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "address"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "applicationId": {
+      "type": "integer"
+    },
+    "furtherInformation": {
+      "type": "string"
+    },
+    "submissionDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "commodityGroup": {
+      "type": "string",
+      "enum": [
+        "Potatoes"
+      ]
+    },
+    "certificateGenerationURL": {
+      "type": "string"
+    },
+    "documentsViewURL": {
+      "type": "string"
+    },
+    "editApplicationURL": {
+      "type": "string"
+    },
+    "applicantId": {
+      "$ref": "#/definitions/uuid"
+    },
+    "exporterOrganisationId": {
+      "$ref": "#/definitions/uuid"
+    },
+    "userReference": {
+      "type": "string"
+    },
+    "applicationStatus": {
+      "type": "string",
+      "enum": [
+        "Submitted",
+        "Updated"
+      ]
+    },
+    "destinationCountry": {
+      "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+    },
+    "certificateRequiredByDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "inspectionDetails": {
+      "type": "object",
+      "properties": {
+        "inspectionDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "inspectionTime": {
+          "type": "string",
+          "format": "time"
+        },
+        "locationId": {
+          "$ref": "#/definitions/uuid"
+        },
+        "contactDetails": {
+          "$ref": "#/definitions/contactDetails"
+        }
+      },
+      "required": [
+        "inspectionDate",
+        "inspectionTime",
+        "contactDetails",
+        "locationId"
+      ],
+      "additionalProperties": false
+    },
+    "consignments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "consignmentId": {
+              "$ref": "#/definitions/uuid"
+            },
+            "commodities": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/definitions/uuid"
+                    },
+                    "potatoType": {
+                      "type": "string",
+                      "enum": [
+                        "Ware",
+                        "Seed"
+                      ]
+                    },
+                    "applicationNumber": {
+                      "description": "Mandatory when potato type is Ware",
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "lotReference": {
+                      "description": "Mandatory when potato type is Ware",
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "stockNumber": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "chemicalUsed": {
+                      "type": "string",
+                      "maxLength": 100
+                    },
+                    "noOfPackages": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9999999999
+                    },
+                    "packageType": {
+                      "type": "string"
+                    },
+                    "packagingMaterial": {
+                      "type": "string"
+                    },
+                    "variety": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "distinguishingMarks": {
+                      "type": "string"
+                    },
+                    "amountOrQuantity": {
+                      "type": "number"
+                    },
+                    "measurementUnit": {
+                      "$ref": "#/definitions/measurementUnit"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "potatoType",
+                    "amountOrQuantity",
+                    "measurementUnit",
+                    "noOfPackages",
+                    "packageType",
+                    "variety"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "consignee": {
+              "$ref": "#/definitions/consignee"
+            },
+            "valueAmountInPounds": {
+              "type": "number"
+            },
+            "pointOfEntry": {
+              "type": "string"
+            },
+            "transportMode": {
+              "$ref": "#/definitions/transportMode"
+            }
+          },
+          "required": [
+            "consignmentId",
+            "commodities",
+            "consignee",
+            "valueAmountInPounds",
+            "pointOfEntry",
+            "transportMode"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "applicationId",
+    "submissionDateTime",
+    "commodityGroup",
+    "certificateGenerationURL",
+    "editApplicationURL",
+    "applicantId",
+    "userReference",
+    "applicationStatus",
+    "destinationCountry",
+    "certificateRequiredByDate",
+    "inspectionDetails",
+    "consignments"
+  ],
+  "additionalProperties": false
+}

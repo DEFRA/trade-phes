@@ -1,0 +1,856 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "$id": "v7.0",
+  "definitions": {
+    "isoAlpha2-or-iso3166-2": {
+      "type": "string",
+      "oneOf": [
+        {
+          "pattern": "^[A-Z]{2}$"
+        },
+        {
+          "pattern": "^[A-Z]{2}-[A-Z0-9]{2,3}$"
+        }
+      ]
+    },
+    "measurementUnit": {
+      "enum": [
+        "Grams",
+        "Kilograms",
+        "Litres",
+        "Tonnes",
+        "Units"
+      ]
+    },
+    "contactDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "phone"
+      ],
+      "additionalProperties": false
+    },
+    "transportMode": {
+      "type": "string",
+      "enum": [
+        "Maritime",
+        "Rail",
+        "Road",
+        "Air",
+        "Mail"
+      ]
+    },
+    "consignee": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "importPermitNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "address"
+      ],
+      "additionalProperties": false
+    },
+    "otherConsignmentDetails": {
+      "type": "object",
+      "properties": {
+        "valueAmountInPounds": {
+          "type": "number"
+        },
+        "pointOfEntry": {
+          "type": "string"
+        },
+        "transportMode": {
+          "$ref": "#/definitions/transportMode"
+        }
+      },
+      "required": [
+        "valueAmountInPounds",
+        "pointOfEntry",
+        "transportMode"
+      ]
+    },
+    "potatoesConsignment": {
+      "type": "object",
+      "properties": {
+        "consignmentId": {
+          "format": "uuid"
+        },
+        "commodityGroup": {
+          "type": "string",
+          "enum": [
+            "Potatoes"
+          ]
+        },
+        "commodities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "format": "uuid"
+                },
+                "potatoType": {
+                  "type": "string",
+                  "enum": [
+                    "Ware",
+                    "Seed"
+                  ]
+                },
+                "applicationNumber": {
+                  "description": "Mandatory when potato type is Ware",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "lotReference": {
+                  "description": "Mandatory when potato type is Ware",
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "stockNumber": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "chemicalUsed": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "noOfPackages": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9999999999
+                },
+                "packageType": {
+                  "type": "string"
+                },
+                "packagingMaterial": {
+                  "type": "string"
+                },
+                "variety": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "distinguishingMarks": {
+                  "type": "string"
+                },
+                "amountOrQuantity": {
+                  "type": "number"
+                },
+                "measurementUnit": {
+                  "$ref": "#/definitions/measurementUnit"
+                }
+              },
+              "required": [
+                "id",
+                "potatoType",
+                "amountOrQuantity",
+                "measurementUnit",
+                "noOfPackages",
+                "packageType",
+                "variety"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "consignee": {
+          "$ref": "#/definitions/consignee"
+        },
+        "otherDetails": {
+          "$ref": "#/definitions/otherConsignmentDetails"
+        }
+      },
+      "required": [
+        "consignmentId",
+        "consignee",
+        "otherDetails",
+        "commodityGroup"
+      ],
+      "additionalProperties": false
+    },
+    "ufmConsignment": {
+      "type": "object",
+      "properties": {
+        "consignmentId": {
+          "format": "uuid"
+        },
+        "commodityGroup": {
+          "type": "string",
+          "enum": [
+            "UsedFarmMachinery"
+          ]
+        },
+        "commodities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid"
+              },
+              "machineryType": {
+                "type": "string"
+              },
+              "make": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "uniqueId": {
+                "type": "string"
+              },
+              "countryOfOrigin": {
+                "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+              }
+            },
+            "required": [
+              "id",
+              "machineryType",
+              "make",
+              "model",
+              "uniqueId",
+              "countryOfOrigin"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "consignee": {
+          "$ref": "#/definitions/consignee"
+        },
+        "otherDetails": {
+          "$ref": "#/definitions/otherConsignmentDetails"
+        }
+      },
+      "required": [
+        "consignmentId",
+        "consignee",
+        "otherDetails",
+        "commodityGroup"
+      ],
+      "additionalProperties": false
+    },
+    "plantProductsConsignment": {
+      "type": "object",
+      "properties": {
+        "consignmentId": {
+          "format": "uuid"
+        },
+        "commodityGroup": {
+          "type": "string",
+          "enum": [
+            "PlantProducts"
+          ]
+        },
+        "commodities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid"
+              },
+              "eppoCode": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "genus": {
+                "type": "string"
+              },
+              "species": {
+                "type": "string"
+              },
+              "countryOfOrigin": {
+                "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+              },
+              "noOfPackages": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "packageType": {
+                "type": "string"
+              },
+              "packagingMaterial": {
+                "type": "string"
+              },
+              "additionalCountriesOfOrigin": {
+                "type": "string"
+              },
+              "sampleReference": {
+                "type": "integer"
+              },
+              "distinguishingMarks": {
+                "type": "string"
+              },
+              "amountOrQuantity": {
+                "type": "number"
+              },
+              "measurementUnit": {
+                "$ref": "#/definitions/measurementUnit"
+              }
+            },
+            "required": [
+              "id",
+              "countryOfOrigin",
+              "sampleReference",
+              "amountOrQuantity",
+              "measurementUnit",
+              "noOfPackages",
+              "packageType"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "consignee": {
+          "$ref": "#/definitions/consignee"
+        },
+        "otherDetails": {
+          "$ref": "#/definitions/otherConsignmentDetails"
+        }
+      },
+      "required": [
+        "consignmentId",
+        "consignee",
+        "otherDetails",
+        "commodityGroup"
+      ],
+      "additionalProperties": false
+    },
+    "plantsConsignment": {
+      "type": "object",
+      "properties": {
+        "consignmentId": {
+          "format": "uuid"
+        },
+        "commodityGroup": {
+          "type": "string",
+          "enum": [
+            "Plants"
+          ]
+        },
+        "commodities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid"
+              },
+              "eppoCode": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "genus": {
+                "type": "string"
+              },
+              "species": {
+                "type": "string"
+              },
+              "countryOfOrigin": {
+                "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+              },
+              "noOfPackages": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "packageType": {
+                "type": "string"
+              },
+              "packagingMaterial": {
+                "type": "string"
+              },
+              "variety": {
+                "type": "string"
+              },
+              "commodityType": {
+                "type": "string",
+                "enum": [
+                  "MicropropagatedMaterial",
+                  "PlantProducts",
+                  "Plants",
+                  "Produce"
+                ]
+              },
+              "distinguishingMarks": {
+                "type": "string"
+              },
+              "amountOrQuantity": {
+                "type": "number"
+              },
+              "measurementUnit": {
+                "$ref": "#/definitions/measurementUnit"
+              }
+            },
+            "required": [
+              "id",
+              "countryOfOrigin",
+              "commodityType",
+              "amountOrQuantity",
+              "measurementUnit",
+              "noOfPackages",
+              "packageType"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "consignee": {
+          "$ref": "#/definitions/consignee"
+        },
+        "otherDetails": {
+          "$ref": "#/definitions/otherConsignmentDetails"
+        }
+      },
+      "required": [
+        "consignmentId",
+        "consignee",
+        "otherDetails",
+        "commodityGroup"
+      ],
+      "additionalProperties": false
+    },
+    "ifCommodityGroupIsPlants-thenConsignmentMustBeOfPlantsType": {
+      "if": {
+        "properties": {
+          "commodityGroup": {
+            "const": "Plants"
+          }
+        },
+        "required": [
+          "commodityGroup"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consignment": {
+            "properties": {
+              "commodityGroup": {
+                "const": "Plants"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ifCommodityGroupIsPlantProducts-thenConsignmentMustBeOfPlantProductsType&InspDetailsNotRequired-otherwiseInspDetailsAreMandatory": {
+      "if": {
+        "properties": {
+          "commodityGroup": {
+            "const": "PlantProducts"
+          }
+        },
+        "required": [
+          "commodityGroup"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "not": {
+              "required": [
+                "inspectionDetails"
+              ]
+            }
+          },
+          {
+            "properties": {
+              "consignment": {
+                "properties": {
+                  "commodityGroup": {
+                    "const": "PlantProducts"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "else": {
+        "required": [
+          "inspectionDetails"
+        ]
+      }
+    },
+    "ifCommodityGroupIsUFM-thenConsignmentMustBeOfUFMType": {
+      "if": {
+        "properties": {
+          "commodityGroup": {
+            "const": "UsedFarmMachinery"
+          }
+        },
+        "required": [
+          "commodityGroup"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consignment": {
+            "properties": {
+              "commodityGroup": {
+                "const": "UsedFarmMachinery"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ifCommodityGroupIsPotatoes-thenConsignmentMustBeOfPotatoesType": {
+      "if": {
+        "properties": {
+          "commodityGroup": {
+            "const": "Potatoes"
+          }
+        },
+        "required": [
+          "commodityGroup"
+        ]
+      },
+      "then": {
+        "properties": {
+          "consignment": {
+            "properties": {
+              "commodityGroup": {
+                "const": "Potatoes"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ifAppTypeIsRF-thenRFDetailsMandatoryAndInspDateNotRequired": {
+      "if": {
+        "properties": {
+          "applicationType": {
+            "const": "Re-Forwarding"
+          }
+        },
+        "required": [
+          "applicationType"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "required": [
+              "reForwardingDetails"
+            ]
+          },
+          {
+            "properties": {
+              "inspectionDetails": {
+                "not": {
+                  "required": [
+                    "inspectionDate"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ifAppTypeIsPHEATS-thenInspDetails-contactDetailsAndInspDate-notRequired": {
+      "if": {
+        "properties": {
+          "applicationType": {
+            "const": "Phyto-PHEATS"
+          }
+        },
+        "required": [
+          "applicationType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inspectionDetails": {
+            "not": {
+              "required": [
+                "inspectionDate",
+                "contactDetails"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ifAppTypeIsPhyto-thenInspDetails-contactDetailsAndInspDate-required": {
+      "if": {
+        "properties": {
+          "applicationType": {
+            "const": "Phyto"
+          }
+        },
+        "required": [
+          "applicationType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inspectionDetails": {
+            "required": [
+              "inspectionDate",
+              "contactDetails"
+            ]
+          }
+        }
+      }
+    },
+    "ifPotatoesPhyto-thenInspTimeIsMandatory-otherwiseInspTimeNotRequired": {
+      "if": {
+        "allOf": [
+          {
+            "properties": {
+              "applicationType": {
+                "const": "Phyto"
+              }
+            }
+          },
+          {
+            "properties": {
+              "commodityGroup": {
+                "const": "Potatoes"
+              }
+            }
+          }
+        ],
+        "required": [
+          "applicationType",
+          "commodityGroup"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inspectionDetails": {
+            "required": [
+              "inspectionTime",
+              "inspectionDate"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "inspectionDetails": {
+            "not": {
+              "required": [
+                "inspectionTime"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "applicationId": {
+      "type": "integer"
+    },
+    "furtherInformation": {
+      "type": "string"
+    },
+    "submissionDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "commodityGroup": {
+      "type": "string",
+      "enum": [
+        "Plants",
+        "UsedFarmMachinery",
+        "Potatoes",
+        "PlantProducts"
+      ]
+    },
+    "certificateGenerationURL": {
+      "type": "string"
+    },
+    "documentsViewURL": {
+      "type": "string"
+    },
+    "editApplicationURL": {
+      "type": "string"
+    },
+    "applicantId": {
+      "format": "uuid"
+    },
+    "exporterOrganisationId": {
+      "format": "uuid"
+    },
+    "agencyId": {
+      "description": "The agency's org id",
+      "format": "uuid"
+    },
+    "intermediary": {
+      "description": "This flag will be true if application was made by an agent or agency.",
+      "type": "boolean"
+    },
+    "userReference": {
+      "type": "string"
+    },
+    "applicationStatus": {
+      "type": "string",
+      "enum": [
+        "Submitted",
+        "Updated"
+      ]
+    },
+    "applicationType": {
+      "type": "string",
+      "enum": [
+        "Phyto",
+        "Re-Forwarding",
+        "Phyto-PHEATS"
+      ]
+    },
+    "destinationCountry": {
+      "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+    },
+    "certificateRequiredByDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "inspectionDetails": {
+      "type": "object",
+      "properties": {
+        "inspectionDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "inspectionTime": {
+          "type": "string",
+          "format": "time"
+        },
+        "locationId": {
+          "format": "uuid"
+        },
+        "contactDetails": {
+          "$ref": "#/definitions/contactDetails"
+        }
+      },
+      "required": [
+        "locationId"
+      ],
+      "additionalProperties": false
+    },
+    "reForwardingDetails": {
+      "type": "object",
+      "properties": {
+        "importPhytoNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "countryOfOrigin": {
+          "$ref": "#/definitions/isoAlpha2-or-iso3166-2"
+        },
+        "repackingContainer": {
+          "type": "string",
+          "enum": [
+            "New",
+            "Original",
+            "NotRepacked"
+          ]
+        }
+      },
+      "required": [
+        "importPhytoNumber",
+        "countryOfOrigin",
+        "repackingContainer"
+      ],
+      "additionalProperties": false
+    },
+    "consignment": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/plantProductsConsignment"
+        },
+        {
+          "$ref": "#/definitions/plantsConsignment"
+        },
+        {
+          "$ref": "#/definitions/ufmConsignment"
+        },
+        {
+          "$ref": "#/definitions/potatoesConsignment"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/ifCommodityGroupIsPlants-thenConsignmentMustBeOfPlantsType"
+    },
+    {
+      "$ref": "#/definitions/ifCommodityGroupIsPlantProducts-thenConsignmentMustBeOfPlantProductsType&InspDetailsNotRequired-otherwiseInspDetailsAreMandatory"
+    },
+    {
+      "$ref": "#/definitions/ifCommodityGroupIsUFM-thenConsignmentMustBeOfUFMType"
+    },
+    {
+      "$ref": "#/definitions/ifCommodityGroupIsPotatoes-thenConsignmentMustBeOfPotatoesType"
+    },
+    {
+      "$ref": "#/definitions/ifAppTypeIsRF-thenRFDetailsMandatoryAndInspDateNotRequired"
+    },
+    {
+      "$ref": "#/definitions/ifPotatoesPhyto-thenInspTimeIsMandatory-otherwiseInspTimeNotRequired"
+    },
+    {
+      "$ref": "#/definitions/ifAppTypeIsPHEATS-thenInspDetails-contactDetailsAndInspDate-notRequired"
+    },
+    {
+      "$ref": "#/definitions/ifAppTypeIsPhyto-thenInspDetails-contactDetailsAndInspDate-required"
+    }
+  ],
+  "required": [
+    "applicationId",
+    "submissionDateTime",
+    "commodityGroup",
+    "applicationType",
+    "certificateGenerationURL",
+    "applicantId",
+    "intermediary",
+    "userReference",
+    "applicationStatus",
+    "destinationCountry",
+    "certificateRequiredByDate",
+    "consignment"
+  ],
+  "additionalProperties": false
+}
