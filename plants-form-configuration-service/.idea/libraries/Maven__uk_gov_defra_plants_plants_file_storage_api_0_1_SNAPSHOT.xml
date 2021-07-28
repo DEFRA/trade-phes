@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: uk.gov.defra.plants:plants-file-storage-api:0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/gov/defra/plants/plants-file-storage-api/0.1-SNAPSHOT/plants-file-storage-api-0.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/gov/defra/plants/plants-file-storage-api/0.1-SNAPSHOT/plants-file-storage-api-0.1-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/gov/defra/plants/plants-file-storage-api/0.1-SNAPSHOT/plants-file-storage-api-0.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
