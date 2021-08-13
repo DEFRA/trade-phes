@@ -1,0 +1,102 @@
+applicationName: "form-configuration-service"
+versionNumber: "${FORM_CONFIGURATION_SERVICE_VERSION}"
+baseUri: "${FORM_CONFIGURATION_SERVICE_SCHEME}://${FORM_CONFIGURATION_SERVICE_HOST}:${FORM_CONFIGURATION_SERVICE_EXTERNAL_PORT}"
+
+server:
+  applicationConnectors:
+  - type: http
+    port: !!int ${FORM_CONFIGURATION_SERVICE_PORT}
+    maxRequestHeaderSize: 128KiB
+  adminConnectors:
+  - type: http
+    port: 4761
+  requestLog:
+    # set to empty list to disable HTTP request logging
+    appenders: []
+
+formConfigurationDatabase:
+  driverClass: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  user: ${FORM_CONFIGURATION_SERVICE_DB_USER}
+  password: ${FORM_CONFIGURATION_SERVICE_DB_PASSWORD}
+  url: "jdbc:sqlserver://${FORM_CONFIGURATION_SERVICE_DB_HOST}:${FORM_CONFIGURATION_SERVICE_DB_PORT};databaseName=${FORM_CONFIGURATION_SERVICE_DB_NAME};encrypt=true;trustServerCertificate=true"
+  properties:
+    charSet: UTF-8
+  maxWaitForConnection: 1s
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+  validationQueryTimeout: 3s
+  minSize: ${FORM_CONFIGURATION_SERVICE_DB_MIN_SIZE}
+  maxSize: ${FORM_CONFIGURATION_SERVICE_DB_MAX_SIZE}
+  checkConnectionWhileIdle: true
+  evictionInterval: 10s
+  minIdleTime: 1 minute
+
+caseManagementServiceClient:
+  connectionTimeout: ${CASE_MANAGEMENT_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${CASE_MANAGEMENT_SERVICE_TIMEOUT}
+
+caseManagementService:
+  baseUri: "${CASE_MANAGEMENT_SERVICE_SCHEME}://${CASE_MANAGEMENT_SERVICE_HOST}:${CASE_MANAGEMENT_SERVICE_PORT}"
+  retryWait: ${CASE_MANAGEMENT_SERVICE_RETRY_WAIT}
+
+certificateServiceClient:
+  connectionTimeout: ${CERTIFICATE_SERVICE_CONNECTION_TIMEOUT}
+  timeout: ${CERTIFICATE_SERVICE_TIMEOUT}
+
+certificateService:
+  baseUri: "${CERTIFICATE_SERVICE_SCHEME}://${CERTIFICATE_SERVICE_HOST}:${CERTIFICATE_SERVICE_PORT}"
+  retryWait: ${CERTIFICATE_SERVICE_RETRY_WAIT}
+
+logging:
+  level: "${FORM_CONFIG_SERVICE_LOGGING_LEVEL}"
+  appenders:
+  - type: application-insights
+  - type: console
+    timeZone: UTC
+    logFormat: "%-5level [%date{ISO8601,UTC}] %mdc{defra-exports-correlation-id} %mdc{defra-exports-correlation-count} %logger{50}: %message%n%rootException"
+
+basicAuthenticationCredentials:
+  password: "${FORM_CONFIGURATION_SERVICE_BASIC_AUTH_PASSWORD}"
+
+eventHubConfiguration:
+  eventHubNamespace: "${EVENT_HUB_NAMESPACE}"
+  eventHubName: "${EVENT_HUB_NAME}"
+  eventHubSharedAccessKeyName: "${EVENT_HUB_KEY_NAME}"
+  eventHubSharedAccessKey: "${EVENT_HUB_KEY_VALUE}"
+  numberOfThreads: "${EVENT_HUB_CLIENT_THREAD_COUNT}"
+  environmentAbbreviation: "${ENVIRONMENT_ABBREVIATION}"
+
+redis:
+  host: "${REDIS_SERVER_NAME}"
+  port: "${REDIS_SERVER_PORT}"
+  password: "${REDIS_SERVER_PASSWORD}"
+  ssl: "${REDIS_USE_TLS}"
+  connectionTimeout: "${REDIS_CONNECTION_TIMEOUT}"
+  soTimeout: "${REDIS_SO_TIMEOUT}"
+  pool:
+    minIdle: "${REDIS_POOL_MIN_IDLE}"
+    maxIdle: "${REDIS_POOL_MAX_IDLE}"
+    maxTotal: "${REDIS_POOL_MAX_TOTAL}"
+    maxWaitMillis: "${REDIS_POOL_MAX_WAIT}"
+    timeBetweenEvictionRunsMillis: "${REDIS_POOL_EVICTION_TIME}"
+    minEvictableIdleTimeMillis: "${REDIS_POOL_EVICTION_IDLE_TIME}"
+  envPrefix: "${REDIS_CACHE_ENV_PREFIX}"
+
+activeMergedFormsCache:
+  expiry: "${ACTIVE_MERGED_FORMS_CACHE_EXPIRY}"
+  clientErrorExpiry: "${ACTIVE_MERGED_FORMS_CACHE_CLIENT_ERROR_EXPIRY}"
+mergedFormsCache:
+  expiry: "${MERGED_FORMS_CACHE_EXPIRY}"
+  clientErrorExpiry: "${MERGED_FORMS_CACHE_CLIENT_ERROR_EXPIRY}"
+mergedFormPagesCache:
+  expiry: "${MERGED_FORM_PAGES_CACHE_EXPIRY}"
+  clientErrorExpiry: "${MERGED_FORM_PAGES_CACHE_CLIENT_ERROR_EXPIRY}"
+
+swagger:
+  resourcePackage: uk.gov.defra.plants.formconfiguration.resource
+  schemes:
+  - "${FORM_CONFIGURATION_SERVICE_SCHEME}"
+
+jwtKey: ${JWT_DER}
+internalSymmetricalKey: "${INTERNAL_SYMMETRICAL_KEY}"
+
+automatedTestsActive: "${RUN_AUTOMATION_TESTS}"
